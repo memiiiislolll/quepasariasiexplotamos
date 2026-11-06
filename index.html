@@ -86,7 +86,7 @@
 
       top: 0; left: 0; width: 100%; height: 100%;
 
-      background-image:
+      background-image:&#x20;
 
         radial-gradient(white 1px, transparent 0),
 
@@ -230,7 +230,7 @@
 
 
 
-    .page-view.active {
+    .page-view\.active {
 
       display: block;
 
@@ -1144,10 +1144,12 @@
     }
 
     function loadVisitor() {
-      // Mostrar la bienvenida cada vez que se abre la página.
-      document.getElementById('welcomeScreen').style.display = 'flex';
-      document.getElementById('visitorName').value = '';
-      document.getElementById('visitorGreeting').textContent = '';
+      const savedName = localStorage.getItem('multiverse_visitor_name');
+      if (savedName) {
+        document.getElementById('visitorName').value = savedName;
+        document.getElementById('welcomeScreen').style.display = 'none';
+        document.getElementById('visitorGreeting').textContent = `¡Hola, ${savedName}! ¿Qué pasaría si...?`;
+      }
     }
 
     document.getElementById('visitorName').addEventListener('keydown', (event) => {
