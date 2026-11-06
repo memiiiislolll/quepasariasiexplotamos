@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administración | Mundos Paralelos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #121C69;
+      --bg-dark: #2C2081;
+      --purple-base: #573299;
+      --purple-mid: #8547B0;
+      --purple-light: #B65FC8;
+      --pink-soft: #E07BDA;
+      --pink-pastel: #F89BDD;
+      --white-glow: #fff5fb;
+      --glass-bg: rgba(44, 32, 129, 0.58);
+      --border-glow: rgba(224, 123, 218, 0.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      color: var(--white-glow);
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(135deg, var(--bg-deep), var(--bg-dark) 45%, var(--purple-base));
+      padding: 28px 16px 48px;
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image: radial-gradient(white 1px, transparent 0), radial-gradient(rgba(248,155,221,.6) 1.5px, transparent 0);
+      background-size: 55px 55px, 90px 90px; background-position: 0 0, 25px 25px; opacity: .22;
+    }
+    .wrap { position: relative; z-index: 1; width: min(980px, 100%); margin: 0 auto; }
+    header {
+      display: flex; justify-content: space-between; align-items: center; gap: 16px;
+      padding: 16px 20px; margin-bottom: 24px; border: 1px solid var(--border-glow);
+      border-radius: 16px; background: rgba(18,28,105,.62); backdrop-filter: blur(10px);
+    }
+    .brand { font: 700 1.05rem 'Comfortaa', cursive; color: var(--pink-pastel); }
+    a { color: var(--pink-pastel); }
+    .panel {
+      background: var(--glass-bg); border: 1px solid var(--border-glow); border-radius: 20px;
+      padding: 24px; backdrop-filter: blur(12px); box-shadow: 0 10px 40px rgba(18,28,105,.35);
+    }
+    h1, h2 { font-family: 'Comfortaa', cursive; color: var(--pink-pastel); }
+    h1 { font-size: clamp(1.5rem, 4vw, 2rem); margin-bottom: 8px; }
+    .muted { color: #d1b3e8; line-height: 1.55; }
+    .login-panel { width: min(440px, 100%); margin: 8vh auto 0; text-align: center; }
+    .login-panel p { margin: 12px 0 20px; }
+    input {
+      width: 100%; border: 1px solid var(--purple-light); border-radius: 12px;
+      background: rgba(18,28,105,.55); color: white; padding: 13px 14px;
+      font: 1rem 'Quicksand', sans-serif; outline: none; margin-bottom: 12px;
+    }
+    input:focus { border-color: var(--pink-soft); box-shadow: 0 0 10px rgba(224,123,218,.25); }
+    button {
+      border: 1px solid var(--pink-soft); border-radius: 12px; padding: 10px 15px;
+      color: white; background: var(--purple-mid); cursor: pointer;
+      font: 700 .92rem 'Quicksand', sans-serif; transition: .2s ease;
+    }
+    button:hover { background: var(--pink-soft); color: var(--bg-deep); }
+    button:disabled { opacity: .55; cursor: wait; }
+    .primary { background: linear-gradient(135deg, var(--purple-mid), var(--pink-soft)); color: var(--bg-deep); border: 0; }
+    .danger { background: rgba(160,45,100,.35); border-color: rgba(255,150,190,.6); }
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 22px 0 16px; }
+    .toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .stats { color: #d1b3e8; font-size: .9rem; }
+    .logs { display: grid; gap: 14px; }
+    .log-card { border: 1px solid rgba(182,95,200,.38); border-radius: 15px; padding: 17px; background: rgba(87,50,153,.25); }
+    .log-meta { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; color: #cbb0e0; font-size: .8rem; margin-bottom: 12px; }
+    .log-name { color: var(--pink-pastel); font-weight: 700; margin-bottom: 8px; }
+    .log-question { color: var(--white-glow); font-weight: 700; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .log-answer { color: #ead7f5; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 10px; }
+    .log-answer summary { color: var(--pink-pastel); cursor: pointer; font-weight: 700; margin-bottom: 7px; }
+    .card-actions { display: flex; justify-content: flex-end; margin-top: 14px; }
+    .empty { text-align: center; color: #d1b3e8; padding: 48px 16px; border: 1px dashed var(--border-glow); border-radius: 14px; }
+    .status { min-height: 22px; color: #ffb5d9; font-size: .9rem; margin-top: 10px; }
+    .hidden { display: none !important; }
+    @media (max-width: 600px) { header { flex-direction: column; align-items: flex-start; } .panel { padding: 18px; } .toolbar { align-items: flex-start; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div class="brand">✨ Mundos Paralelos · Administración</div>
+      <a href="./">Volver al simulador</a>
+    </header>
+
+    <section id="loginPanel" class="panel login-panel">
+      <h1>🔒 Panel privado</h1>
+      <p class="muted">Inicia sesión para consultar y administrar las hipótesis guardadas en la bitácora.</p>
+      <form id="loginForm">
+        <input id="password" type="password" placeholder="Contraseña de administración" autocomplete="current-password" required>
+        <button id="loginButton" class="primary" type="submit">Iniciar sesión</button>
+      </form>
+      <p id="loginStatus" class="status" role="status"></p>
+    </section>
+
+    <section id="dashboard" class="panel hidden">
+      <h1>Bitácora multiversal</h1>
+      <p class="muted">Aquí aparecen las consultas permitidas que se han generado desde el simulador.</p>
+      <div class="toolbar">
+        <div id="stats" class="stats">Cargando registros...</div>
+        <div class="toolbar-actions">
+          <button id="refreshButton" type="button">↻ Actualizar</button>
+          <button id="clearButton" class="danger" type="button">Eliminar todo</button>
+          <button id="logoutButton" type="button">Cerrar sesión</button>
+        </div>
+      </div>
+      <p id="dashboardStatus" class="status" role="status"></p>
+      <div id="logs" class="logs"><div class="empty">Cargando conversaciones...</div></div>
+    </section>
+  </main>
+
+  <script>
+    const API_URL = 'https://quepasariasi.miliwasherelol.workers.dev';
+    let adminToken = sessionStorage.getItem('multiverse_admin_token') || '';
+
+    const loginPanel = document.getElementById('loginPanel');
+    const dashboard = document.getElementById('dashboard');
+    const loginStatus = document.getElementById('loginStatus');
+    const dashboardStatus = document.getElementById('dashboardStatus');
+    const logsContainer = document.getElementById('logs');
+
+    function setLoggedIn(isLoggedIn) {
+      loginPanel.classList.toggle('hidden', isLoggedIn);
+      dashboard.classList.toggle('hidden', !isLoggedIn);
+    }
+
+    async function apiRequest(path, options = {}) {
+      const headers = { ...(options.headers || {}) };
+      if (adminToken) headers.Authorization = `Bearer ${adminToken}`;
+      if (options.body && !headers['Content-Type']) headers['Content-Type'] = 'application/json';
+      const response = await fetch(`${API_URL}${path}`, { ...options, headers });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.error) {
+        if (response.status === 401) logout(false);
+        throw new Error(data.error || `Error del servidor (${response.status}).`);
+      }
+      return data;
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const button = document.getElementById('loginButton');
+      const password = document.getElementById('password').value;
+      loginStatus.textContent = 'Comprobando acceso...';
+      button.disabled = true;
+      try {
+        const response = await fetch(`${API_URL}/admin/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.token) throw new Error(data.error || 'No se pudo iniciar sesión.');
+        adminToken = data.token;
+        sessionStorage.setItem('multiverse_admin_token', adminToken);
+        document.getElementById('password').value = '';
+        loginStatus.textContent = '';
+        setLoggedIn(true);
+        await loadChats();
+      } catch (error) {
+        loginStatus.textContent = error.message;
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    function formatDate(value) {
+      if (!value) return 'Fecha no disponible';
+      const date = new Date(value.includes('Z') ? value : value.replace(' ', 'T') + 'Z');
+      return Number.isNaN(date.getTime()) ? value : date.toLocaleString('es-CL');
+    }
+
+    function getResponseTitle(raw) {
+      try {
+        const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        return parsed?.title || 'Resultado generado';
+      } catch {
+        return 'Resultado generado';
+      }
+    }
+
+    function createLogCard(chat) {
+      const card = document.createElement('article');
+      card.className = 'log-card';
+
+      const meta = document.createElement('div');
+      meta.className = 'log-meta';
+      const id = document.createElement('span');
+      id.textContent = `REGISTRO #${chat.id}`;
+      const date = document.createElement('span');
+      date.textContent = formatDate(chat.created_at);
+      meta.append(id, date);
+
+      const name = document.createElement('div');
+      name.className = 'log-name';
+      name.textContent = chat.visitor_name ? `Visitante: ${chat.visitor_name}` : 'Visitante sin apodo';
+
+      const question = document.createElement('div');
+      question.className = 'log-question';
+      question.textContent = `❓ ${chat.prompt || 'Sin consulta registrada'}`;
+
+      const details = document.createElement('details');
+      details.className = 'log-answer';
+      const summary = document.createElement('summary');
+      summary.textContent = `🌌 ${getResponseTitle(chat.response)} · Ver respuesta completa`;
+      const answer = document.createElement('div');
+      try {
+        const parsed = typeof chat.response === 'string' ? JSON.parse(chat.response) : chat.response;
+        answer.textContent = [parsed.title, parsed.divergence, parsed.butterfly, parsed.outcome].filter(Boolean).join('\n\n');
+      } catch {
+        answer.textContent = chat.response || 'Sin respuesta guardada.';
+      }
+      details.append(summary, answer);
+
+      const actions = document.createElement('div');
+      actions.className = 'card-actions';
+      const deleteButton = document.createElement('button');
+      deleteButton.className = 'danger';
+      deleteButton.type = 'button';
+      deleteButton.textContent = 'Eliminar registro';
+      deleteButton.addEventListener('click', () => deleteChat(chat.id));
+      actions.appendChild(deleteButton);
+
+      card.append(meta, name, question, details, actions);
+      return card;
+    }
+
+    async function loadChats() {
+      dashboardStatus.textContent = 'Actualizando registros...';
+      logsContainer.replaceChildren();
+      try {
+        const data = await apiRequest('/admin/chats?limit=200');
+        const chats = Array.isArray(data.chats) ? data.chats : [];
+        document.getElementById('stats').textContent = `${chats.length} registro(s) cargado(s)`;
+        if (!chats.length) {
+          const empty = document.createElement('div');
+          empty.className = 'empty';
+          empty.textContent = 'Todavía no hay consultas guardadas. Cuando se genere un universo permitido, aparecerá aquí.';
+          logsContainer.appendChild(empty);
+        } else {
+          chats.forEach(chat => logsContainer.appendChild(createLogCard(chat)));
+        }
+        dashboardStatus.textContent = '';
+      } catch (error) {
+        dashboardStatus.textContent = error.message;
+        document.getElementById('stats').textContent = 'No se pudieron cargar los registros.';
+      }
+    }
+
+    async function deleteChat(id) {
+      if (!confirm(`¿Eliminar el registro #${id}? Esta acción no se puede deshacer.`)) return;
+      try {
+        await apiRequest(`/admin/chats/${encodeURIComponent(id)}`, { method: 'DELETE' });
+        await loadChats();
+      } catch (error) {
+        dashboardStatus.textContent = error.message;
+      }
+    }
+
+    document.getElementById('clearButton').addEventListener('click', async () => {
+      if (!confirm('¿Eliminar TODOS los registros guardados? Esta acción no se puede deshacer.')) return;
+      try {
+        const result = await apiRequest('/admin/chats', { method: 'DELETE' });
+        dashboardStatus.textContent = `Se eliminaron ${result.deleted || 0} registro(s).`;
+        await loadChats();
+      } catch (error) {
+        dashboardStatus.textContent = error.message;
+      }
+    });
+
+    document.getElementById('refreshButton').addEventListener('click', loadChats);
+    document.getElementById('logoutButton').addEventListener('click', () => logout(true));
+
+    function logout(showMessage = true) {
+      adminToken = '';
+      sessionStorage.removeItem('multiverse_admin_token');
+      setLoggedIn(false);
+      if (showMessage) loginStatus.textContent = 'Sesión cerrada.';
+    }
+
+    if (adminToken) {
+      setLoggedIn(true);
+      loadChats();
+    } else {
+      setLoggedIn(false);
+    }
+  </script>
+</body>
+</html>
